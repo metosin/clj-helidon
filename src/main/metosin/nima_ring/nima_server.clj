@@ -2,12 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.java.io :as io]
             [metosin.nima-ring.constants :as constants])
-  (:import (io.helidon.common.http Http
-                                   Http$Status
-                                   Http$Method
-                                   Http$Header
-                                   Http$HeaderName)
-           (io.helidon.nima.webserver WebServer)
+  (:import (io.helidon.nima.webserver WebServer)
            (io.helidon.nima.webserver.http HttpRouting
                                            Handler
                                            ServerRequest
@@ -55,7 +50,7 @@
   (.status resp (constants/code->http-status status))
   (doseq [[header-name header-value] headers]
     (.header resp
-             ^Http$HeaderName (constants/name->http-header header-name)
+             (constants/name->http-header header-name)
              ^"[Ljava.lang.String;" (into-array String [(str header-value)])))
   (when body
     (let [out (.outputStream resp)]
@@ -63,11 +58,11 @@
       (.flush out))))
 
 
-(defn- ->handler ^"[Lio.helidon.nima.webserver.http.Handler;" [f]
+(defn- ->handler ^"[Lio.helidon.nima.webserver.http.Handler;" [handler]
   (into-array Handler [(reify Handler
                          (handle [_this req resp]
                            (-> (server-req->ring-req req)
-                               (f)
+                               (handler)
                                (send-ring-req resp))))]))
 
 
@@ -87,49 +82,3 @@
       :port     (.port server)
       :stop     (fn [] (.stop server))
       :running? (fn [] (.isRunning server))})))
-
-
-(comment
-
-  (require 'clojure.pprint)
-  (def handler (fn [req]
-                 (println "==============================================================\nreq:")
-                 (clojure.pprint/pprint req)
-                 {:status  200
-                  :headers {"content-type" "text-plain"}
-                  :body    "hello"}))
-
-  (def server (nima-server #'handler {:port 0}))
-  (:port server)
-  ((:stop server))
-  (.isRunning (:server server))
-  (.value (.query @req*))
-
-
-  (import '(io.helidon.nima.webclient WebClient))
-  (import '(io.helidon.common.http Http$HeaderName))
-  (def client (-> (WebClient/builder)
-                  (.build)))
-
-  (let [resp (-> (.method client (c->http-method :get))
-                 (.uri "http://localhost:64774/fo/ba")
-                 (.header Http$Header/CONTENT_TYPE "application/json")
-                 (.header (Http$Header/create "x-apikey") "112233")
-                 (.queryParam "a" (into-array String ["b"]))
-                 (.request))]
-    [(-> resp
-         (.status)
-         (.code))
-     (->> resp
-          (.headers)
-          (.toMap)
-          (reduce-kv (fn [acc k ^java.util.List v]
-                       (assoc acc (str/lower-case k) (.get v 0)))
-                     {}))])
-
-
-
-
-  ; 
-  )
-
