@@ -12,33 +12,41 @@ More information about virtual threads can be found in the links below:
 
 ...todo...
 
+## Status
+
+Alpha release, subject to changes and no guarantees of updates.
+
 ## Usage
 
-Add nima-ring as a dependency:
+Add nima-ring as a dependency to your `deps.edn`:
 
-...todo...
+```
+io.github.metosin/nima-ring {:git/tag "0.0.2"
+                             :git/sha "b99a846"}
+```
 
 Start the server:
 
 ```clj
 (ns my-app
-  (:require [[metosin.nima-ring.nima-server :as nima]]))
+  (:require [metosin.nima-ring.nima-server :as nima]))
 
 (defn handler [req]
   {:status 200
    :body   "Hello"})
 
 (def server (nima/nima-server handler {:port 8080}))
+
+(println "Server listening on port" (:port server))
 ```
 
-The `nima/nima-server` accepts a ring handler function and optionally a configuration map. Configuration can contain:
+The `nima-server` function accepts a ring handler function and optionally a configuration map. Configuration can contain:
 
 - `:port` - The local port server should listen (defaults to 0)
 - `:host` - The hostname or string IP address to bind the server (defaults to "localhost")
+  When the port is 0 the server binds to any available port (very handy in testing).
 
-If `:port` is 0 then the server binds to any available port.
-
-The return value is a map with the following:
+The return value is a map with the following keys:
 
 - `:port` - The port number server is listening
 - `:stop` - A 0-args function that stops the server
