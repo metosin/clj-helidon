@@ -22,7 +22,7 @@ Add nima-ring as a dependency to your `deps.edn`:
 
 ```
 io.github.metosin/nima-ring {:git/tag "0.0.2"
-                             :git/sha "b99a846"}
+                             :git/sha "144cd79"}
 ```
 
 Start the server:
