@@ -42,9 +42,10 @@ Start the server:
 
 The `nima-server` function accepts a ring handler function and optionally a configuration map. Configuration can contain:
 
-- `:port` - The local port server should listen (defaults to 0)
 - `:host` - The hostname or string IP address to bind the server (defaults to "localhost")
-  When the port is 0 the server binds to any available port (very handy in testing).
+- `:port` - The local port server should listen (defaults to 0)
+
+When the port is 0 the server binds to any available port (very handy in testing).
 
 The return value is a map with the following keys:
 
@@ -55,6 +56,7 @@ The return value is a map with the following keys:
 
 ## TODO
 
+[ ] SSE support
 [ ] WebSocket support
 [ ] HTTPS
 [ ] API docs

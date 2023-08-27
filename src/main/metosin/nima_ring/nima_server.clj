@@ -1,84 +1,98 @@
 (ns metosin.nima-ring.nima-server
-  (:require [clojure.string :as str]
-            [clojure.java.io :as io]
-            [metosin.nima-ring.constants :as constants])
-  (:import (io.helidon.nima.webserver WebServer)
-           (io.helidon.nima.webserver.http HttpRouting
-                                           Handler
-                                           ServerRequest
-                                           ServerResponse)))
+  (:require [metosin.nima-ring.impl :as impl])
+  (:import (io.helidon.nima.webserver WebServer
+                                      WebServerConfig$Builder)
+           (io.helidon.nima.webserver.http HttpRouting)))
 
 
 (set! *warn-on-reflection* true)
 
 
-; See Ring docs: https://github.com/ring-clojure/ring/wiki/Concepts#requests
-(defn- server-req->ring-req [^ServerRequest req]
-  (let [prologue    (.prologue req)
-        local       (.localPeer req)
-        remote-addr (-> (.remotePeer req)
-                        ^java.net.InetSocketAddress (.address)
-                        (.getAddress)
-                        (.getHostAddress))
-        query       (.query req)
-        content     (.content req)]
-    {:server-port    (.port local)               ; The port on which the request is being handled. 
-     :server-name    (.host local)               ; The resolved server name, or the server IP address.
-     :remote-addr    remote-addr                 ; The IP address of the client or the last proxy that sent the request.
-     :uri            (.toString (.path req))     ; The request URI (the full path after the domain name) .
-     :query-string   (when-not (.isEmpty query)  ; The query string, if present.
-                       (.value query))
-     :scheme         (-> prologue                ; The transport protocol, either :http or :https.
-                         (.protocol)
-                         (str/lower-case)
-                         (keyword))
-     :request-method (-> prologue                ; The HTTP request method 
-                         (.method)
-                         constants/http-method->kw)
-     ; TODO: there is a much performant method available
-     :headers        (->> req                    ; A Clojure map of lowercase header name strings to
-                          (.headers)             ; corresponding header value strings.
-                          (.toMap)
-                          (reduce-kv (fn [acc k ^java.util.List v]
-                                       (assoc acc (str/lower-case k) (.get v 0)))
-                                     {}))
-     :body           (when (.hasEntity content)  ; An InputStream for the request body, if present. 
-                       (.inputStream content))}))
+(defn routing
+  "Create a Nima HttpRouting object for provided routes. The `routes` must be a sequence
+   of route definitions. Each route definition must be a vector of three elements:
+     - method, a keyword for HTTP request method
+     - path, a string, see https://helidon.io/docs/v3/#/se/webserver for more information
+     - handler function
+   In addition to regular HTTP request keyword (:get, :post, :head, etc) the method can also be:
+     `:any`      - Matches any HTTP request method
+     `:error`    - Adds an error handler, the path must be a exception class and the handler
+                   must be a Nima ErrorHandler, see `->ErrorHandler`
+     `:service`  - Add Nima `io.helidon.nima.webserver.http.HttpService` to handle the route"
+  ^HttpRouting [routes]
+  (-> (HttpRouting/builder)
+      (impl/add-routes routes)
+      (.build)))
 
 
-(defn- send-ring-req [{:keys [status headers body]} ^ServerResponse resp]
-  (.status resp (constants/code->http-status status))
-  (doseq [[header-name header-value] headers]
-    (.header resp
-             (constants/name->http-header header-name)
-             ^"[Ljava.lang.String;" (into-array String [(str header-value)])))
-  (when body
-    (let [out (.outputStream resp)]
-      (io/copy body out)
-      (.flush out))))
+(defn- add-routing ^WebServerConfig$Builder [^WebServerConfig$Builder builder routing-or-vec]
+  (.addRouting builder ^HttpRouting (if (instance? HttpRouting routing-or-vec)
+                                      routing-or-vec
+                                      (routing routing-or-vec))))
 
 
-(defn- ->handler ^"[Lio.helidon.nima.webserver.http.Handler;" [handler]
-  (into-array Handler [(reify Handler
-                         (handle [_this req resp]
-                           (-> (server-req->ring-req req)
-                               (handler)
-                               (send-ring-req resp))))]))
-
-
-(defn nima-server
-  (^WebServer [handler] (nima-server handler nil))
-  (^WebServer [handler {:keys [host port]}]
-   (let [^HttpRouting routing (-> (HttpRouting/builder)
-                                  (.any (->handler handler))
-                                  (.build))
-         ^WebServer server  (-> (WebServer/builder)
+(defn server
+  "Create and start an instance of Nima HTTP server. Accepts Nima HttpRouting 
+   object and optionally a map of options. Currently supported options are:
+      :host      Host name to use, defaults to \"localhost\"
+      :port      Port to use, or 0 to let server pick any available port number. Defaults to 0
+   Returns a map with following items:
+      :server    Instance of io.helidon.nima.webserver.WebServer
+      :port      Port number
+      :stop      Zero arg function, closes the server when called
+      :running?  Zero arg function that returns `true` if server is running.
+   "
+  (^WebServer [routing-or-vec] (server routing-or-vec nil))
+  (^WebServer [routing-or-vec {:keys [host port]}]
+   (let [^WebServer server  (-> (WebServer/builder)
                                 (.host (or host "localhost"))
                                 (.port (int (or port 0)))
-                                (.addRouting routing)
+                                (add-routing routing-or-vec)
                                 (.build)
                                 (.start))]
      {:server   server
       :port     (.port server)
       :stop     (fn [] (.stop server))
       :running? (fn [] (.isRunning server))})))
+
+
+(defn nima-server
+  "Conveniency helper to create and start an instance of Nima HTTP server. Accepts 
+   Ring handler function and optionally a map of options. Supported options
+   are return value is described in `metosin.nima-ring.nima-server/server` function
+   above"
+  (^WebServer [handler] (nima-server handler nil))
+  (^WebServer [handler opts]
+   (server (routing [[:any "/*" handler]]) opts)))
+
+
+(comment
+
+  (def nima (nima-server (fn [_] {:status  200
+                                  :headers {"content-type" "text/plain"}
+                                  :body    "Hi"})))
+  ((:running? nima))
+  ;; => true
+
+  (:port nima)
+  ;; => 56245
+
+
+  ;; $ http :56245/
+  ;; HTTP/1.1 200 OK
+  ;; Connection: keep-alive
+  ;; Content-Type: text/plain
+  ;; Date: Sat, 26 Aug 2023 15:45:09 +0300
+  ;; Transfer-Encoding: chunked
+  ;; 
+  ;; Hi
+
+  ((:stop nima))
+  ;; => #object[io.helidon.nima.webserver.LoomServer 0x4a5bccfb "io.helidon.nima.webserver.LoomServer@4a5bccfb"]
+
+  ((:running? nima))
+  ;; => false
+
+  ;; $ http :56245/
+  ;; http: error: ConnectionError: HTTPConnectionPool(host='localhost', port=58198): Max retries exceeded with url: / 
+  )
