@@ -4,7 +4,8 @@
            io.helidon.nima.http2/helidon-nima-http2-webserver              {:mvn/version "4.0.0-M1"}
            io.helidon.nima.sse/helidon-nima-sse-webserver                  {:mvn/version "4.0.0-M1"}
            io.helidon.nima.websocket/helidon-nima-websocket-webserver      {:mvn/version "4.0.0-M1"}
-           io.helidon.logging/helidon-logging-slf4j                        {:mvn/version "4.0.0-M1"}}
+           io.helidon.logging/helidon-logging-slf4j                        {:mvn/version "4.0.0-M1"}
+           metosin/jsonista                                                {:mvn/version "0.3.7"}}
 
  :aliases {:dev      {:extra-paths ["src/dev"]
                       :extra-deps  {org.clojure/clojure            {:mvn/version "1.11.1"}
