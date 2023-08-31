@@ -2,22 +2,8 @@
   (:require [metosin.nima-ring.http-method :refer [http-method->kw]]
             [metosin.nima-ring.util :refer [object-generic-type]]
             [metosin.nima-ring.http-headers-proxy :as proxy])
-  (:import (io.helidon.common.parameters Parameters)
-           (io.helidon.common.http Http$Header
-                                   Http$HeaderName
-                                   Http$HeaderValue
-                                   ServerRequestHeaders)
-           (io.helidon.nima.webserver.http ServerRequest
-                                           ServerResponse)
-           (clojure.lang IEditableCollection
-                         IFn
-                         IKVReduce
-                         IPersistentMap
-                         MapEntry
-                         MapEquivalence
-                         PersistentHashMap
-                         Util)
-           (java.util Map)))
+  (:import (io.helidon.nima.webserver.http ServerRequest
+                                           ServerResponse)))
 
 
 (set! *warn-on-reflection* true)

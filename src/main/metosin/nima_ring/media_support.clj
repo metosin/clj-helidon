@@ -1,13 +1,7 @@
 (ns metosin.nima-ring.media-support
-  (:require [clojure.java.io :as io]
-            [metosin.nima-ring.http-header :refer [http-header-value]]
-            [metosin.nima-ring.media-type :refer [media-type]]
+  (:require [metosin.nima-ring.media-type :refer [media-type]]
             [metosin.nima-ring.util :refer [supplier]])
-  (:import (java.io InputStream OutputStream)
-           (java.nio.charset StandardCharsets)
-           (io.helidon.common.http Headers
-                                   WritableHeaders
-                                   Http$HeaderValues
+  (:import (io.helidon.common.http Headers
                                    HttpMediaType)
            (io.helidon.common.media.type MediaType)
            (io.helidon.nima.http.media MediaContext
@@ -16,8 +10,7 @@
                                        MediaSupport$ReaderResponse
                                        MediaSupport$WriterResponse
                                        EntityReader
-                                       EntityWriter)
-           (io.helidon.nima.webserver WebServerConfig$Builder)))
+                                       EntityWriter)))
 
 
 (set! *warn-on-reflection* true)

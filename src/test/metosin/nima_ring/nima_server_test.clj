@@ -143,7 +143,7 @@
                                    :url              (str "http://localhost:" (nima/port server) path)
                                    :throw-exceptions false}))))))
 
-(deftest response-types-test
+(deftest file-and-stream-response-types-test
   (let [routes   [[:get "/bytes" (constantly {:status 200
                                               :body   (byte-array (map int "Hello"))})]
                   [:get "/stream" (constantly {:status 200
