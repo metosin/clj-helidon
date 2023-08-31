@@ -21,7 +21,7 @@ Alpha release, subject to changes and no guarantees of updates.
 Add nima-ring as a dependency to your `deps.edn`:
 
 ```
-io.github.metosin/nima-ring {:git/tag "0.0.2"
+io.github.metosin/nima-ring {:git/tag "0.0.3"
                              :git/sha "144cd79"}
 ```
 
@@ -29,34 +29,41 @@ Start the server:
 
 ```clj
 (ns my-app
-  (:require [metosin.nima-ring.nima-server :as nima]))
+  (:require [metosin.nima-ring.server :as nima]))
 
 (defn handler [req]
   {:status 200
    :body   "Hello"})
 
-(def server (nima/nima-server handler {:port 8080}))
+(def server (nima/create-server handler {:port 8080}))
 
-(println "Server listening on port" (:port server))
+(println "Server listening on port" (nima/port server))
 ```
 
-The `nima-server` function accepts a ring handler function and optionally a configuration map. Configuration can contain:
+The `create-server` function accepts a ring handler function or routing data, and optionally a
+configuration map. Configuration can contain:
 
 - `:host` - The hostname or string IP address to bind the server (defaults to "localhost")
 - `:port` - The local port server should listen (defaults to 0)
+- `:media-context` - MediaContext to use for content negotiation
 
 When the port is 0 the server binds to any available port (very handy in testing).
 
-The return value is a map with the following keys:
+The return value is an server object. The `metosin.nima-ring.server` namespace
+provides functions that take server object as argument. These are:
 
-- `:port` - The port number server is listening
-- `:stop` - A 0-args function that stops the server
-- `:running?` - A 0-args function that returns truthy is the server is running
-- `:server` - The server object
+- `server` - Returns the instance of `io.helidon.nima.webserver.WebServer`
+- `port` - Returns the local port the server is bind to
+- `running?` - Returns `true` if server is running, otherwise returns `false`
+- `shutdown` - Closes the server
+
+The server object also implements the `java.io.Closeable` interface, so you can use the
+standard clojure `clojure.core/with-open` to open and automatically close the server. This
+is quite handy in testing.
 
 ## TODO
 
-[ ] SSE support
+[x] SSE support
 [ ] WebSocket support
 [ ] HTTPS
 [ ] API docs
