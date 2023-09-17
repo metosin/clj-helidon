@@ -68,6 +68,7 @@ is quite handy in testing.
 [ ] HTTPS
 [ ] API docs
 [ ] Perf tests
+[ ] Split lib into multiple smaller libs
 
 ## License
 

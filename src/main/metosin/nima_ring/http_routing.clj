@@ -22,6 +22,9 @@
 
 (defn- build-route [^HttpRouting$Builder builder [method path handler]]
   (cond
+    (nil? handler)
+    builder
+
     (= method :error)
     (do (assert (and (instance? java.lang.Class path)
                      (.isAssignableFrom Throwable path))
