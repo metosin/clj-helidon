@@ -1,5 +1,7 @@
 # Nima Ring adapter
 
+** This library is experimental and for testing and educational use only **
+
 A library that adapts [Helidon Níma](https://helidon.io/nima) for the [Clojure Ring](https://github.com/ring-clojure/ring) library.
 
 The main argument for Níma is that it's based on new (available from JDK 19 onwards) _virtual threads_. The virtual thread in Java is a lightweight thread that does not consume a platform thread. This enables async programming with the same API as traditional blocking APIs. This means that applications using virtual threads can freely use the existing blocking I/O operations and still be fully async.
@@ -21,8 +23,8 @@ Alpha release, subject to changes and no guarantees of updates.
 Add nima-ring as a dependency to your `deps.edn`:
 
 ```
-io.github.metosin/nima-ring {:git/tag "0.0.3"
-                             :git/sha "4b43614"}
+io.github.metosin/nima-ring {:git/tag "0.0.4"
+                             :git/sha "cb693d4"}
 ```
 
 Start the server:
