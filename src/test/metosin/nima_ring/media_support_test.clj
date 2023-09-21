@@ -1,5 +1,7 @@
 (ns metosin.nima-ring.media-support-test
   (:require [clojure.test :refer [deftest is testing]]
+            [clojure.edn]
+            [cognitect.transit]
             [matcher-combinators.test]
             [clj-http.client :as client]
             [jsonista.core :as jsonista]
@@ -8,6 +10,7 @@
             [metosin.nima-ring.default-media-support :as default-media-support]
             [metosin.nima-ring.http-header :refer [http-header-value]]
             [metosin.nima-ring.media-type :refer [media-type]]
+            [metosin.nima-ring.media-support.transit :as transit]
             [metosin.nima-ring.media-support.edn :as edn]
             [metosin.nima-ring.media-support.json :as json])
   (:import (io.helidon.common.http WritableHeaders)))
@@ -106,36 +109,67 @@
                                      :throw-exceptions false})))))))
 
 
-(deftest edn-media-support-test
-  (let [handler       (fn [{:keys [body]}]
+
+(deftest transit-media-support-test
+  (let [data          {:foo 42}
+        handler       (fn [{:keys [body]}]
                         {:status 200
-                         :body   {:body body}})
+                         :body   body})
+        media-context (media-support/media-context (transit/transit-media-support))]
+    (with-open [server (nima/create-server [[:post "/foo" handler]]
+                                           {:media-context media-context})]
+      (is (match? {:status  200
+                   :headers {"Content-Type" "application/transit+json; charset=UTF-8"}
+                   :body    (fn [^String body]
+                              (-> (.getBytes body java.nio.charset.StandardCharsets/UTF_8)
+                                  (java.io.ByteArrayInputStream.)
+                                  (cognitect.transit/reader :json)
+                                  (cognitect.transit/read)
+                                  (= data)))}
+                  (client/request {:method           :post
+                                   :url              (str "http://localhost:" (nima/port server) "/foo")
+                                   :headers          {"Accept"       transit/application-transit+json
+                                                      "Content-Type" transit/application-transit+json}
+                                   :body             (let [out (java.io.ByteArrayOutputStream.)]
+                                                       (-> (cognitect.transit/writer out :json)
+                                                           (cognitect.transit/write data))
+                                                       (String. (.toByteArray out)))
+                                   :throw-exceptions false}))))))
+
+
+(deftest edn-media-support-test
+  (let [data          {:foo 42}
+        handler       (fn [{:keys [body]}]
+                        {:status 200
+                         :body   body})
         media-context (media-support/media-context (edn/edn-media-support))]
     (with-open [server (nima/create-server [[:post "/foo" handler]]
                                            {:media-context media-context})]
       (is (match? {:status  200
                    :headers {"Content-Type" "application/edn; charset=UTF-8"}
-                   :body    "{:body {:foo 42}}"}
+                   :body    (fn [body] (= (clojure.edn/read-string body) data))}
                   (client/request {:method           :post
                                    :url              (str "http://localhost:" (nima/port server) "/foo")
-                                   :headers          {"Accept"       "application/edn"
-                                                      "Content-Type" "application/edn"}
-                                   :body             (pr-str {:foo 42})
+                                   :headers          {"Accept"       edn/application-edn
+                                                      "Content-Type" edn/application-edn}
+                                   :body             (pr-str data)
                                    :throw-exceptions false}))))))
 
 
 (deftest json-media-support-test
-  (let [handler       (fn [{:keys [body]}]
-                        {:status 200
-                         :body   {:foo (:foo body)}})]
+  (let [data    {:foo 42}
+        handler (fn [{:keys [body]}]
+                  {:status 200
+                   :body   body})]
     (with-open [server (nima/create-server [[:post "/foo" handler]]
                                            {:media-supports [(json/json-media-support)]})]
       (is (match? {:status  200
                    :headers {"Content-Type" "application/json; charset=UTF-8"}
-                   :body    "{\"foo\":42}"}
+                   :body    (fn [^String body]
+                              (= (jsonista/read-value body jsonista/keyword-keys-object-mapper) data))}
                   (client/request {:method           :post
                                    :url              (str "http://localhost:" (nima/port server) "/foo")
-                                   :headers          {"Accept"       "application/json"
-                                                      "Content-Type" "application/json"}
-                                   :body             (jsonista/write-value-as-bytes {:foo 42})
+                                   :headers          {"Accept"       json/application-json
+                                                      "Content-Type" json/application-json}
+                                   :body             (jsonista/write-value-as-string data)
                                    :throw-exceptions false}))))))

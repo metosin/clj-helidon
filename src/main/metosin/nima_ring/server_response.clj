@@ -1,7 +1,7 @@
 (ns metosin.nima-ring.server-response
-  (:require [clojure.java.io :as io]
-            [metosin.nima-ring.http-status :refer [http-status]]
-            [metosin.nima-ring.http-header :refer [http-header-value]])
+  (:require [metosin.nima-ring.http-status :refer [http-status]]
+            [metosin.nima-ring.http-header :refer [http-header-value]]
+            [metosin.nima-ring.default-body-writer :as body-writer])
   (:import (io.helidon.nima.webserver.http ServerResponse)))
 
 
@@ -21,10 +21,6 @@
   (.status server-resp (-> ring-resp :status (or 200) (http-status)))
   (doseq [[header-name header-value] (-> ring-resp :headers)]
     (.header server-resp (http-header-value header-name header-value)))
-  (when-let [body (-> ring-resp :body)]
-    (let [resp-body (cond
-                      ;; FIXME: test that Nima closes the input-stream once the response is handler
-                      (instance? java.io.File body) (io/input-stream body)
-                      (instance? java.nio.file.Path body) (io/input-stream (.toFile ^java.nio.file.Path body))
-                      :else body)]
-      (.send server-resp resp-body))))
+  (let [body (-> ring-resp :body)]
+    (when-not (body-writer/write-body body server-resp)
+      (.send server-resp body))))

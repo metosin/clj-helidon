@@ -1,6 +1,6 @@
 (ns metosin.nima-ring.static-content
   (:require [clojure.java.io :as io]
-            [clojure.edn :as edn]
+            [metosin.nima-ring.default-mime-types :refer [default-mime-types]]
             [metosin.nima-ring.media-type :refer [media-type]])
   (:import (java.nio.file Path)
            (io.helidon.nima.webserver.staticcontent StaticContentService
@@ -37,13 +37,6 @@
     builder))
 
 
-(defn- default-mime-types []
-  (with-open [in (-> (io/resource "metosin/nima_ring/default-mime-types.edn")
-                     (io/reader)
-                     (java.io.PushbackReader.))]
-    (edn/read in)))
-
-
 (defn html5-history-path-mapper
   (^java.util.function.Function [] (html5-history-path-mapper nil))
   (^java.util.function.Function [index]
@@ -62,7 +55,7 @@
                 (.isDirectory (io/file path)))
            (str "path must be a string pointing to a directory: [" path "] (" (type path) ")"))
    (-> (StaticContentService/builder (->Path path))
-       (set-media-types (or mime-types (default-mime-types)))
+       (set-media-types (or mime-types @default-mime-types))
        (set-welcome-file-name index)
        (set-path-mapper (if (= path-mapper :html5) (html5-history-path-mapper index) path-mapper))
        (.build))))
@@ -96,7 +89,7 @@
                                      (or classloader
                                          (-> (Thread/currentThread)
                                              (.getContextClassLoader))))
-       (set-media-types (or mime-types (default-mime-types)))
+       (set-media-types (or mime-types @default-mime-types))
        (set-tmp-dir (->Path tmp-dir))
        (set-welcome-file-name index)
        (set-path-mapper (if (= path-mapper :html5) (html5-history-path-mapper index) path-mapper))
