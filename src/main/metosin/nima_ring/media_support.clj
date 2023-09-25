@@ -1,16 +1,16 @@
 (ns metosin.nima-ring.media-support
   (:require [metosin.nima-ring.media-type :refer [media-type]]
             [metosin.nima-ring.util :refer [supplier]])
-  (:import (io.helidon.common.http Headers
-                                   HttpMediaType)
+  (:import (io.helidon.http Headers
+                            HttpMediaType)
            (io.helidon.common.media.type MediaType)
-           (io.helidon.nima.http.media MediaContext
-                                       MediaSupport
-                                       MediaSupport$SupportLevel
-                                       MediaSupport$ReaderResponse
-                                       MediaSupport$WriterResponse
-                                       EntityReader
-                                       EntityWriter)))
+           (io.helidon.http.media MediaContext
+                                  MediaSupport
+                                  MediaSupport$SupportLevel
+                                  MediaSupport$ReaderResponse
+                                  MediaSupport$WriterResponse
+                                  EntityReader
+                                  EntityWriter)))
 
 
 (set! *warn-on-reflection* true)

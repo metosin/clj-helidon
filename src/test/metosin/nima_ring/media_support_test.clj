@@ -13,7 +13,7 @@
             [metosin.nima-ring.media-support.transit :as transit]
             [metosin.nima-ring.media-support.edn :as edn]
             [metosin.nima-ring.media-support.json :as json])
-  (:import (io.helidon.common.http WritableHeaders)))
+  (:import (io.helidon.http WritableHeaders)))
 
 
 (deftest simple-media-type-test

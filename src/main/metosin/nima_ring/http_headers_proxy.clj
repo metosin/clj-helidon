@@ -1,7 +1,7 @@
 (ns metosin.nima-ring.http-headers-proxy
   (:require [metosin.nima-ring.http-header :as h])
-  (:import (io.helidon.common.http Http$HeaderValue
-                                   ServerRequestHeaders)
+  (:import (io.helidon.http Http$Header
+                            ServerRequestHeaders)
            (io.helidon.common.parameters Parameters)
            (clojure.lang IFn
                          IPersistentMap
@@ -65,7 +65,7 @@
 
   (seq [_]
     (->> headers
-         (eduction (map (fn [^Http$HeaderValue header]
+         (eduction (map (fn [^Http$Header header]
                           (MapEntry/create (-> header .headerName .lowerCase)
                                            (-> header .value)))))
          (seq)))
@@ -75,7 +75,7 @@
 
   (iterator [_]
     (->> headers
-         ^Iterable (eduction (map (fn [^Http$HeaderValue header]
+         ^Iterable (eduction (map (fn [^Http$Header header]
                                     (MapEntry/create (-> header .headerName .lowerCase)
                                                      (-> header .value)))))
          .iterator))

@@ -2,7 +2,7 @@
   (:require [metosin.nima-ring.http-status :refer [http-status]]
             [metosin.nima-ring.http-header :refer [http-header-value]]
             [metosin.nima-ring.default-body-writer :as body-writer])
-  (:import (io.helidon.nima.webserver.http ServerResponse)))
+  (:import (io.helidon.webserver.http ServerResponse)))
 
 
 (set! *warn-on-reflection* true)

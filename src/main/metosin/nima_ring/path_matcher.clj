@@ -1,6 +1,6 @@
 (ns metosin.nima-ring.path-matcher
-  (:import (io.helidon.common.http PathMatcher
-                                   PathMatchers)))
+  (:import (io.helidon.http PathMatcher
+                            PathMatchers)))
 
 
 

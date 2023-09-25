@@ -2,8 +2,8 @@
   (:require [metosin.nima-ring.http-method :refer [http-method->kw]]
             [metosin.nima-ring.util :refer [object-generic-type]]
             [metosin.nima-ring.http-headers-proxy :as proxy])
-  (:import (io.helidon.nima.webserver.http ServerRequest
-                                           ServerResponse)))
+  (:import (io.helidon.webserver.http ServerRequest
+                                      ServerResponse)))
 
 
 (set! *warn-on-reflection* true)

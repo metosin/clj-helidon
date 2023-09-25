@@ -1,9 +1,9 @@
 (ns metosin.nima-ring.http-handler
   (:require [metosin.nima-ring.server-request :refer [server-req->ring-req]]
             [metosin.nima-ring.server-response :refer [send-ring-resp]])
-  (:import (io.helidon.nima.webserver.http Handler
-                                           ErrorHandler
-                                           HttpService)))
+  (:import (io.helidon.webserver.http Handler
+                                      ErrorHandler
+                                      HttpService)))
 
 
 
@@ -38,7 +38,7 @@
 (defn http-handlers
   "Helper function that accepts multiple Ring handler functions and returns a Java array
    of Nima HTTP handler objects."
-  ^"[Lio.helidon.nima.webserver.http.Handler;" [& handlers]
+  ^"[Lio.helidon.webserver.http.Handler;" [& handlers]
   (->> (filter some? handlers)
        (map http-handler)
        (into-array Handler)))

@@ -4,8 +4,8 @@
             [metosin.nima-ring.media-support :as ms]
             [jsonista.core :as json])
   (:import (java.nio.charset StandardCharsets)
-           (io.helidon.common.http WritableHeaders)
-           (io.helidon.nima.http.media MediaSupport)))
+           (io.helidon.http WritableHeaders)
+           (io.helidon.http.media MediaSupport)))
 
 
 (set! *warn-on-reflection* true)

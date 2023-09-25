@@ -1,12 +1,12 @@
 {:paths   ["src/main"]
- :deps    {io.helidon.nima.webserver/helidon-nima-webserver                {:mvn/version "4.0.0-M1"}
-           io.helidon.nima.webserver/helidon-nima-webserver-static-content {:mvn/version "4.0.0-M1"}
-           io.helidon.nima.http2/helidon-nima-http2-webserver              {:mvn/version "4.0.0-M1"}
-           io.helidon.nima.sse/helidon-nima-sse-webserver                  {:mvn/version "4.0.0-M1"}
-           io.helidon.nima.websocket/helidon-nima-websocket-webserver      {:mvn/version "4.0.0-M1"}
-           io.helidon.logging/helidon-logging-slf4j                        {:mvn/version "4.0.0-M1"}
-           metosin/jsonista                                                {:mvn/version "0.3.7"}
-           com.cognitect/transit-clj                                       {:mvn/version "1.0.333"}}
+ :deps    {io.helidon.webserver/helidon-webserver                {:mvn/version "4.0.0-M2"}
+           io.helidon.webserver/helidon-webserver-static-content {:mvn/version "4.0.0-M2"}
+           io.helidon.webserver/helidon-webserver-http2          {:mvn/version "4.0.0-M2"}
+           io.helidon.webserver/helidon-webserver-sse            {:mvn/version "4.0.0-M2"}
+           io.helidon.websocket/helidon-websocket                {:mvn/version "4.0.0-M2"}
+           io.helidon.logging/helidon-logging-slf4j              {:mvn/version "4.0.0-M2"}
+           metosin/jsonista                                      {:mvn/version "0.3.7"}
+           com.cognitect/transit-clj                             {:mvn/version "1.0.333"}}
 
  :aliases {:dev      {:extra-paths ["src/dev"]
                       :extra-deps  {org.clojure/clojure            {:mvn/version "1.11.1"}
@@ -15,14 +15,12 @@
                                     ch.qos.logback/logback-classic {:mvn/version "1.4.11"}
                                     org.slf4j/log4j-over-slf4j     {:mvn/version "2.0.9"}
                                     org.slf4j/jcl-over-slf4j       {:mvn/version "2.0.9"}
-                                    org.slf4j/jul-to-slf4j         {:mvn/version "2.0.9"}}
-                      :jvm-opts    ["--enable-preview"]}
+                                    org.slf4j/jul-to-slf4j         {:mvn/version "2.0.9"}}}
 
            :test     {:extra-paths ["src/test"]
                       :extra-deps  {lambdaisland/kaocha        {:mvn/version "1.86.1355"}
                                     nubank/matcher-combinators {:mvn/version "3.8.8"}
-                                    clj-http/clj-http          {:mvn/version "3.12.3"}}
-                      :jvm-opts    ["--enable-preview"]}
+                                    clj-http/clj-http          {:mvn/version "3.12.3"}}}
 
            :examples {:extra-paths ["src/examples"]}
 

@@ -12,7 +12,7 @@
                             :headers {"content-type" "text-plain"}
                             :body    "hello"})]
     (with-open [server (nima/create-server handler)]
-      (is (instance? io.helidon.nima.webserver.WebServer (nima/server server)))
+      (is (instance? io.helidon.webserver.WebServer (nima/server server)))
       (is (pos? (nima/port server)))
       (is (true? (nima/running? server)))
       (nima/shutdown server)

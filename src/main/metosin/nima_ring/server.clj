@@ -1,9 +1,9 @@
 (ns metosin.nima-ring.server
   (:require [metosin.nima-ring.http-routing :refer [add-http-routing]]
             [metosin.nima-ring.media-context-builder-helper :as mcbh])
-  (:import (io.helidon.nima.webserver WebServer)
-           (io.helidon.nima.http.media MediaContext
-                                       MediaSupport)))
+  (:import (io.helidon.webserver WebServer)
+           (io.helidon.http.media MediaContext
+                                  MediaSupport)))
 
 
 (set! *warn-on-reflection* true)

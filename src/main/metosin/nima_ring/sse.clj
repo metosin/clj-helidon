@@ -1,7 +1,7 @@
 (ns metosin.nima-ring.sse
-  (:import (io.helidon.nima.sse SseEvent)
-           (io.helidon.nima.sse.webserver SseSink)
-           (io.helidon.nima.webserver.http ServerResponse)))
+  (:import (io.helidon.http.sse SseEvent)
+           (io.helidon.webserver.sse SseSink)
+           (io.helidon.webserver.http ServerResponse)))
 
 
 (set! *warn-on-reflection* true)

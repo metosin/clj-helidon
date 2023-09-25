@@ -3,8 +3,8 @@
             [metosin.nima-ring.http-header :refer [http-header-value]]
             [metosin.nima-ring.media-type :refer [media-type]]
             [metosin.nima-ring.media-support :as ms])
-  (:import (io.helidon.common.http WritableHeaders)
-           (io.helidon.nima.http.media MediaSupport)))
+  (:import (io.helidon.http WritableHeaders)
+           (io.helidon.http.media MediaSupport)))
 
 
 (set! *warn-on-reflection* true)

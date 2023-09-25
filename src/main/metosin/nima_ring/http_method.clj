@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.set :as set]
             [clojure.reflect :as reflect])
-  (:import (io.helidon.common.http Http$Method)))
+  (:import (io.helidon.http Http$Method)))
 
 
 (set! *warn-on-reflection* true)
@@ -21,7 +21,7 @@
        :members
        (filter (partial instance? clojure.reflect.Field))
        (filter (comp :static :flags))
-       (filter (comp (partial = 'io.helidon.common.http.Http$Method) :type))
+       (filter (comp (partial = 'io.helidon.http.Http$Method) :type))
        (map (fn [{field-name :name}]
               [(-> (name field-name)
                    (str/lower-case)
@@ -42,7 +42,7 @@
 
 (defn http-methods
   "Returns a Java array of Http$Method for given Ring method keywords"
-  ^"[Lio.helidon.common.http.Http$Method;"
+  ^"[Lio.helidon.http.Http$Method;"
   [& methods]
   (into-array Http$Method (keep http-method methods)))
 

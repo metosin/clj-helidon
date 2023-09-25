@@ -3,9 +3,9 @@
             [metosin.nima-ring.default-mime-types :refer [default-mime-types]]
             [metosin.nima-ring.media-type :refer [media-type]])
   (:import (java.nio.file Path)
-           (io.helidon.nima.webserver.staticcontent StaticContentService
-                                                    StaticContentService$FileBasedBuilder
-                                                    StaticContentService$ClassPathBuilder)))
+           (io.helidon.webserver.staticcontent StaticContentService
+                                               StaticContentService$FileBasedBuilder
+                                               StaticContentService$ClassPathBuilder)))
 
 
 (set! *warn-on-reflection* true)

@@ -4,9 +4,9 @@
 
 
 (deftest http-method-test
-  (is (every? (partial instance? io.helidon.common.http.Http$Method)
+  (is (every? (partial instance? io.helidon.http.Http$Method)
               (map http-method [:get :post :put :delete :patch :head :options :trace :connect])))
-  (is (= io.helidon.common.http.Http$Method/GET
+  (is (= io.helidon.http.Http$Method/GET
          (http-method :get)))
-  (is (= io.helidon.common.http.Http$Method/GET
-         (http-method io.helidon.common.http.Http$Method/GET))))
+  (is (= io.helidon.http.Http$Method/GET
+         (http-method io.helidon.http.Http$Method/GET))))

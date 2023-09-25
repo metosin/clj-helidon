@@ -1,6 +1,6 @@
 (ns metosin.nima-ring.default-body-writer
   (:require [clojure.java.io :as io])
-  (:import (io.helidon.nima.webserver.http ServerResponse)))
+  (:import (io.helidon.webserver.http ServerResponse)))
 
 
 (set! *warn-on-reflection* true)

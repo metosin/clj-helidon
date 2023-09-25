@@ -2,7 +2,7 @@
   (:require [metosin.nima-ring.http-method :refer [http-methods]]
             [metosin.nima-ring.http-handler :refer [http-handler]]
             [metosin.nima-ring.path-matcher :refer [path-matcher]])
-  (:import (io.helidon.nima.webserver.http HttpRoute)))
+  (:import (io.helidon.webserver.http HttpRoute)))
 
 
 (set! *warn-on-reflection* true)

@@ -1,6 +1,6 @@
 (ns metosin.nima-ring.http-status
   (:require [clojure.reflect :as reflect])
-  (:import (io.helidon.common.http Http$Status)))
+  (:import (io.helidon.http Http$Status)))
 
 
 (set! *warn-on-reflection* true)
@@ -19,7 +19,7 @@
        :members
        (filter (partial instance? clojure.reflect.Field))
        (filter (comp :static :flags))
-       (filter (comp (partial = 'io.helidon.common.http.Http$Status) :type))
+       (filter (comp (partial = 'io.helidon.http.Http$Status) :type))
        (map (fn [status-field]
               (-> (.getField Http$Status (name (:name status-field)))
                   (.get nil))))

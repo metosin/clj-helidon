@@ -2,8 +2,8 @@
   (:require [clojure.test :refer [deftest is testing]]
             [metosin.nima-ring.http-header :as h]
             [metosin.nima-ring.http-headers-proxy :as proxy])
-  (:import (io.helidon.common.http ServerRequestHeaders
-                                   WritableHeaders)
+  (:import (io.helidon.http ServerRequestHeaders
+                            WritableHeaders)
            (io.helidon.common.parameters Parameters)))
 
 

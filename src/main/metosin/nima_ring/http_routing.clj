@@ -3,10 +3,10 @@
             [metosin.nima-ring.http-route :refer [http-route]]
             [metosin.nima-ring.path-matcher :refer [path-matcher-any]]
             [metosin.nima-ring.util :refer [supplier]])
-  (:import (io.helidon.nima.webserver WebServerConfig$Builder)
-           (io.helidon.nima.webserver.http HttpRouting
-                                           HttpRouting$Builder
-                                           Handler)))
+  (:import (io.helidon.webserver WebServerConfig$Builder)
+           (io.helidon.webserver.http HttpRouting
+                                      HttpRouting$Builder
+                                      Handler)))
 
 
 (set! *warn-on-reflection* true)
