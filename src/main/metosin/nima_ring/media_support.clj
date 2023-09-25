@@ -154,10 +154,19 @@
 ;;
 
 
+; See comment below.
+(set! *warn-on-reflection* false)
+
+
 (defn media-context
   (^MediaContext [media-supports] (media-context media-supports false))
   (^MediaContext [media-supports register-defaults]
    (-> (MediaContext/builder)
        (.registerDefaults register-defaults)
        (.addMediaSupports ^java.util.List (if (sequential? media-supports) media-supports [media-supports]))
+       ; Helidon uses some dynamic code generation with MediaContext/builder. The `builder` function
+       ; returns type io.helidon.http.media.MediaContextConfig$Builder, which I can't anywhere in the
+       ; sources. Neither can vscode Java extension, nor clojure compiler. Using reflection I (and 
+       ; clojure) can see that it does have no args function `build`, and it seems to work just fine. 
+       ; Anyway, we get a reflection warning from this line it's turned on.
        (.build))))
