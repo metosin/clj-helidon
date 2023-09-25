@@ -32,7 +32,13 @@
                                         (edn/read))))
    (ms/writer-response :supported (fn [_ body ^java.io.OutputStream out _ ^WritableHeaders response-headers]
                                     (.setIfAbsent response-headers content-type-edn)
-                                    (binding [*out*          (java.io.OutputStreamWriter. out StandardCharsets/UTF_8)
-                                              *print-length* nil]
-                                      (pr body)
-                                      (.flush *out*))))))
+                                    (let [writer (java.io.OutputStreamWriter. out StandardCharsets/UTF_8)]
+                                      (binding [*print-dup*            nil
+                                                *print-length*         nil
+                                                *print-level*          nil
+                                                *print-meta*           true
+                                                *print-namespace-maps* false
+                                                *print-readably*       true
+                                                *out*                  writer]
+                                        (pr body))
+                                      (.flush writer))))))
