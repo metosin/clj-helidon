@@ -24,7 +24,7 @@
       (testing "/index.html is served"
         (is (match? {:status 200
                      :body   "<h1>index</h1>"}
-                    (request :get "/index.html")))) :html
+                    (request :get "/index.html"))))
       (testing "index.html is configured as \"wellcome file\""
         (is (match? {:status 200
                      :body   "<h1>index</h1>"}
