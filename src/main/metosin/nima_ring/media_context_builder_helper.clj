@@ -20,9 +20,9 @@
   (let [context (cond
                   config-media-context config-media-context
                   config-media-supports (media-support/media-context config-media-supports)
-                  :else (media-support/media-context [(transit/transit-media-support)
+                  :else (media-support/media-context [(json/json-media-support)
+                                                      (transit/transit-media-support)
                                                       (edn/edn-media-support)
-                                                      (json/json-media-support)
                                                       (default-media-support/text-media-support)
                                                       (default-media-support/default-media-support)]))]
     (.mediaContext builder ^MediaContext context)))
