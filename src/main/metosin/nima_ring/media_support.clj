@@ -134,8 +134,8 @@
                                                               (fn? writer) (writer-response :supported (entity-writer writer))
                                                               :else (throw (java.lang.IllegalArgumentException. "writer must be WriterResponse, EntityWriter, or function")))
         content-type-supports? (partial media-type-supports? content-type)]
-    (media-support "nima-ring:simple-media-support"
-                   (str "support for " (.text content-type))
+    (media-support (.text content-type)
+                   (.text content-type)
                    (fn [_ ^Headers request-headers]
                      (let [request-content-type (-> (.contentType request-headers) (.orElse nil))]
                        (if (content-type-supports? request-content-type)

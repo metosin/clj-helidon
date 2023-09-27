@@ -30,14 +30,19 @@
 (defn create-server
   "Create and start an instance of Nima Web server. Accepts Nima HttpRouting 
    object and optionally a map of options. Currently supported options are:
-      :host           Host name to use, defaults to \"localhost\"
-      :port           Port to use, or 0 to let server pick any available port number. Defaults to 0
-      :media-context  MediaContext to use for reading/writing request/response bodies 
-   Returns a map with following items:
-      :server    Instance of io.helidon.nima.webserver.WebServer
-      :port      Port number
-      :stop      Zero arg function, closes the server when called
-      :running?  Zero arg function that returns `true` if server is running"
+      :host            Host name to use, defaults to \"localhost\"
+      :port            Port to use, or 0 to let server pick any available port number. Defaults to 0
+      :media-context   MediaContext to use for reading/writing request/response bodies 
+      :media-supports  Media supports that the server handles
+   Returns a server object implementing NimaServerImpl. Use its methods, like:
+      (nima/server s)    - Returns the actual io.helidon.webserver.WebServer instance
+      (nima/port s)      - Returns the local port the server is listening
+      (nima/running? s)  - Returns true is the server is running
+      (nima/shutdown s)  - Closes the server
+   Note that the NimaServerImpl also implements java.io.Closeable, so you can use it
+   with clojure.core/with-open:
+      (with-open [s (nima/create-server ...)]
+         ... do something with server)"
   ([routing] (create-server routing nil))
   ([routing {:keys [host port media-context media-supports]}]
    (assert (or (nil? host)
@@ -51,13 +56,6 @@
    (assert (not (and (some? media-context)
                      (some? media-supports)))
            "can't provide both media-context and media-supports")
-   (assert (or (nil? media-context)
-               (instance? MediaContext media-context))
-           "media-context must be instance of MediaContext type")
-   (assert (or (nil? media-supports)
-               (and (sequential? media-supports)
-                    (every? (partial instance? MediaSupport) media-supports)))
-           "media-supports must contain instances of MediaSupport type")
    (let [^WebServer server (-> (WebServer/builder)
                                (.host (or host "localhost"))
                                (.port (int (or port 0)))

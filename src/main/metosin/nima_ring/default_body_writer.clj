@@ -14,13 +14,16 @@
   java.io.InputStream
   (write-body [this ^ServerResponse server-response]
     (with-open [out (.outputStream server-response)]
-      (io/copy this out))
+      (io/copy this out)
+      (.flush out))
+    (.close this)
     true)
 
   java.io.Reader
   (write-body [this ^ServerResponse server-response]
     (with-open [out (.outputStream server-response)]
-      (io/copy this out))
+      (io/copy this out)
+      (.flush out))
     (.close this)
     true)
 
@@ -28,14 +31,16 @@
   (write-body [this ^ServerResponse server-response]
     (with-open [in  (java.io.FileInputStream. this)
                 out (.outputStream server-response)]
-      (io/copy in out))
+      (io/copy in out)
+      (.flush out))
     true)
 
   java.nio.file.Path
   (write-body [this ^ServerResponse server-response]
     (with-open [in  (java.io.FileInputStream. (.toFile this))
                 out (.outputStream server-response)]
-      (io/copy in out))
+      (io/copy in out)
+      (.flush out))
     true)
 
   nil
@@ -45,6 +50,7 @@
 
   java.lang.Object
   (write-body [_ _]
+    ; Returning false indicated that body was not handled by this
     false))
 
 
@@ -52,7 +58,8 @@
   BodyWriter
   (write-body [this ^ServerResponse server-response]
     (with-open [out (.outputStream server-response)]
-      (io/copy this out))
+      (io/copy this out)
+      (.flush out))
     true))
 
 
@@ -60,5 +67,6 @@
   BodyWriter
   (write-body [this ^ServerResponse server-response]
     (with-open [out (.outputStream server-response)]
-      (io/copy this out))
+      (io/copy this out)
+      (.flush out))
     true))
