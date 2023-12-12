@@ -4,7 +4,7 @@
             [metosin.nima-ring.media-support :as media-support])
   (:import (java.io InputStream OutputStream)
            (java.nio.charset StandardCharsets)
-           (io.helidon.http Http$Headers
+           (io.helidon.http HeaderValues
                             WritableHeaders)
            (io.helidon.http.media MediaSupport)))
 
@@ -36,7 +36,7 @@
    (fn [_ _ _]
      (media-support/writer-response :compatible
                                     (fn [_ body ^java.io.OutputStream out _ ^WritableHeaders response-headers]
-                                      (.setIfAbsent response-headers Http$Headers/CONTENT_TYPE_OCTET_STREAM)
+                                      (.setIfAbsent response-headers HeaderValues/CONTENT_TYPE_OCTET_STREAM)
                                       (if (instance? java.io.InputStream body)
                                         (io/copy body out)
                                         (.write out (.getBytes (str body) StandardCharsets/UTF_8)))

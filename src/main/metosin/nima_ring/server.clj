@@ -1,6 +1,7 @@
 (ns metosin.nima-ring.server
-  (:require [metosin.nima-ring.http-routing :refer [add-http-routing]]
-            [metosin.nima-ring.media-context-builder-helper :as mcbh])
+  (:require [metosin.nima-ring.http-routing :refer [http-routing-builder]]
+            [metosin.nima-ring.media-context-builder-helper :as mcbh]
+            [clojure.reflect :as reflect])
   (:import (io.helidon.webserver WebServer)
            (io.helidon.http.media MediaContext
                                   MediaSupport)))
@@ -59,14 +60,16 @@
    (let [^WebServer server (-> (WebServer/builder)
                                (.host (or host "localhost"))
                                (.port (int (or port 0)))
-                               (add-http-routing routing)
+                               (.routing (http-routing-builder routing))
                                (mcbh/add-media-context media-context media-supports)
                                (.build))]
      (->NimaServerImpl (.start server)))))
 
 
 
+
 (comment
+
 
   (def nima (create-server (constantly {:status  200
                                         :headers {"content-type" "text/plain"}

@@ -1,6 +1,6 @@
 (ns metosin.nima-ring.http-status
   (:require [clojure.reflect :as reflect])
-  (:import (io.helidon.http Http$Status)))
+  (:import (io.helidon.http Status)))
 
 
 (set! *warn-on-reflection* true)
@@ -14,24 +14,24 @@
 
 
 (def ^:private -code->http-status
-  "Maps values of the Java enumeration `io.helidon.common.http.Http$Status` to keywords"
-  (->> (reflect/type-reflect Http$Status)
+  "Maps values of the Java enumeration `io.helidon.common.http.Status` to keywords"
+  (->> (reflect/type-reflect Status)
        :members
        (filter (partial instance? clojure.reflect.Field))
        (filter (comp :static :flags))
-       (filter (comp (partial = 'io.helidon.http.Http$Status) :type))
+       (filter (comp (partial = 'io.helidon.http.Status) :type))
        (map (fn [status-field]
-              (-> (.getField Http$Status (name (:name status-field)))
+              (-> (.getField Status (name (:name status-field)))
                   (.get nil))))
-       (sort-by (fn [^Http$Status status] (.code status)))
-       (map (fn [^Http$Status status]
+       (sort-by (fn [^Status status] (.code status)))
+       (map (fn [^Status status]
               [(.code status) status]))
        (into {})))
 
 
 (defn http-status
-  "Maps numeric HTTP status codes to Java enum `io.helidon.common.http.Http$Status`"
-  ^Http$Status [status-code]
-  (if (instance? Http$Status status-code)
+  "Maps numeric HTTP status codes to Java enum `io.helidon.common.http.Status`"
+  ^Status [status-code]
+  (if (instance? Status status-code)
     status-code
     (-code->http-status status-code)))
