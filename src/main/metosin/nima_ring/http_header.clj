@@ -1,7 +1,6 @@
 (ns metosin.nima-ring.http-header
   (:require [clojure.reflect :as reflect])
   (:import (io.helidon.http Header
-                            Headers
                             HeaderName
                             HeaderNames
                             HeaderValues)))

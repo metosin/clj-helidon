@@ -4,7 +4,8 @@
             [metosin.nima-ring.media-support.transit :as transit]
             [metosin.nima-ring.media-support.edn :as edn]
             [metosin.nima-ring.media-support.json :as json])
-  (:import (io.helidon.http.media MediaSupport MediaContext)
+  (:import (io.helidon.http.media MediaSupport
+                                  MediaContext)
            (io.helidon.webserver WebServerConfig$Builder)))
 
 

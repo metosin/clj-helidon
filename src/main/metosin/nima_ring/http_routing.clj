@@ -2,10 +2,8 @@
   (:require [metosin.nima-ring.http-handler :refer [http-handler http-error-handler]]
             [metosin.nima-ring.http-route :refer [http-route]]
             [metosin.nima-ring.path-matcher :refer [path-matcher-any]]
-            [metosin.nima-ring.util :refer [supplier]]
-            [clojure.reflect :as reflect])
-  (:import (io.helidon.webserver WebServerConfig$Builder)
-           (io.helidon.webserver.http HttpRouting
+            [metosin.nima-ring.util :refer [supplier]])
+  (:import (io.helidon.webserver.http HttpRouting
                                       HttpRouting$Builder
                                       Handler)))
 

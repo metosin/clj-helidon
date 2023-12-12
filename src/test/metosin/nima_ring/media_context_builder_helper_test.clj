@@ -5,7 +5,7 @@
             [metosin.nima-ring.media-support.transit :as transit]
             [metosin.nima-ring.media-support.edn :as edn]
             [metosin.nima-ring.media-context-builder-helper :as mcbh])
-  (:import (io.helidon.http.media MediaSupport MediaContext)))
+  (:import (io.helidon.http.media MediaContext)))
 
 
 (def coerce-media-context #'metosin.nima-ring.media-context-builder-helper/coerce-media-context)

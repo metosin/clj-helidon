@@ -71,6 +71,7 @@ is quite handy in testing.
 [ ] API docs
 [ ] Perf tests
 [ ] Split lib into multiple smaller libs
+[ ] grpc
 
 ## License
 
