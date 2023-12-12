@@ -1,0 +1,32 @@
+{:paths ["bb"]
+ :deps  {}
+ :tasks {test:unit       {:doc  "Run unit tests"
+                          :task (->> (cons "-M:test -m kaocha.runner --reporter kaocha.report/dots" *command-line-args*)
+                                     (clojure.string/join " ")
+                                     (clojure))}
+
+         release:current {:doc      "Print current release info"
+                          :requires ([release])
+                          :task     (let [[tag sha] (release/current)]
+                                      (println (format "{:git/tag \"%s\"\n :git/sha \"%s\"}" tag sha)))}
+
+         release:new     {:doc      "Make new release"
+                          :requires ([release])
+                          :task     (let [[tag sha] (apply release/new-release *command-line-args*)]
+                                      (println (format ":git/tag \"%s\"" tag))
+                                      (println (format ":git/sha \"%s\"" sha)))}
+
+         mvn:pom         {:doc      "Make maven pom.xml"
+                          :requires ([babashka.fs :as fs]
+                                     [release])
+                          :task     (let [[tag] (release/current)]
+                                      (fs/delete-if-exists "pom.xml")
+                                      (fs/delete-if-exists "pom.properties")
+                                      (clojure "-T:build make-pom :version" (pr-str tag)))}
+
+         mvn:sources     {:doc      "Load dependency sources"
+                          :requires ([babashka.process :as p])
+                          :task     (p/exec "mvn dependency:sources")}
+
+         outdated        {:doc  "Check outdated deps"
+                          :task (clojure "-Tantq outdated")}}}
