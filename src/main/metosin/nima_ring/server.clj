@@ -68,24 +68,33 @@
 (comment
 
 
-  (def nima (create-server (constantly {:status  200
-                                        :headers {"content-type" "text/plain"}
-                                        :body    "Hi"})))
+  (def nima (create-server (constantly {:status 200
+                                        :body   {:message "Hi"}})))
   (running? nima)
   ;; => true
 
   (port nima)
   ;; => 51486
 
-
   ;; $ http :51486/
   ;; HTTP/1.1 200 OK
   ;; Connection: keep-alive
-  ;; Content-Type: text/plain; charset=UTF-8
-  ;; Date: Sat, 26 Aug 2023 15:45:09 +0300
+  ;; Content-Type: application/json; charset=UTF-8
+  ;; Date: Mon, 12 Feb 2024 15:59:38 +0200
   ;; Transfer-Encoding: chunked
   ;; 
-  ;; Hi
+  ;; {
+  ;;     "message": "Hi"
+  ;; }
+
+  ;; $ http :51486/ accept:application/edn
+  ;; HTTP/1.1 200 OK
+  ;; Connection: keep-alive
+  ;; Content-Type: application/edn; charset=UTF-8
+  ;; Date: Mon, 12 Feb 2024 15:59:50 +0200
+  ;; Transfer-Encoding: chunked
+  ;; 
+  ;; {:message "Hi"}
 
   (server nima)
   ;; => #object[io.helidon.nima.webserver.LoomServer 0x255f0527 "io.helidon.nima.webserver.LoomServer@255f0527"]
