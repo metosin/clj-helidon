@@ -4,7 +4,7 @@
 
 
 (def default-mime-types (delay
-                          (with-open [in (-> (io/resource "metosin/nima_ring/default-mime-types.edn")
+                          (with-open [in (-> (io/resource "metosin/clj_helidon/default-mime-types.edn")
                                              (io/reader)
                                              (java.io.PushbackReader.))]
                             (edn/read in))))
