@@ -19,8 +19,8 @@ Alpha release, subject to changes and no guarantees of updates.
 Add clj-helidon as a dependency to your `deps.edn`:
 
 ```
-io.github.metosin/clj-helidon {:git/tag "0.0.10"
-                               :git/sha "ec19e00"}
+io.github.metosin/clj-helidon {:git/tag "0.0.12"
+                               :git/sha "0822426"}
 ```
 
 Start the server:
