@@ -6,5 +6,5 @@
 (defn make-pom [{:keys [version]}]
   (b/write-pom {:basis   (b/create-basis)
                 :target  "."
-                :lib     'metosin.nima-ring/nima-ring
+                :lib     'metosin.clj-helidon/clj-helidon
                 :version version}))
