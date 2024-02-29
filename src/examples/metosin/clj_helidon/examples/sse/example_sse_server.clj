@@ -1,5 +1,5 @@
 (ns metosin.clj-helidon.examples.sse.example-sse-server
-  (:require [metosin.clj-helidon.server :as nima]
+  (:require [metosin.clj-helidon.server :as server]
             [metosin.clj-helidon.static-content :as static-content]
             [metosin.clj-helidon.sse :as sse]))
 
@@ -26,11 +26,11 @@
 
 
 (defn -main [& _args]
-  (nima/create-server [[:get "/ping" (constantly {:status 200
-                                                  :body   {:message "pong"}})]
-                       [:get "/messages" messages-handler]
-                       [:service "/" (static-content/static-files-service public-files {:index "index.html"})]]
-                      {:port 8080}))
+  (server/create-server [[:get "/ping" (constantly {:status 200
+                                                    :body   {:message "pong"}})]
+                         [:get "/messages" messages-handler]
+                         [:service "/" (static-content/static-files-service public-files {:index "index.html"})]]
+                        {:port 8080}))
 
 
 
@@ -40,7 +40,7 @@
   (def server (-main))
 
 
-  (nima/port server)
+  (server/port server)
   ;; => 8080
 
 
@@ -85,6 +85,6 @@
   ;;
   ;; ...
 
-  (nima/shutdown server)
+  (server/shutdown server)
   ;
   )
