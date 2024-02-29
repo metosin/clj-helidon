@@ -19,7 +19,9 @@
   (server [_] -server)
   (port [_] (.port -server))
   (running? [_] (.isRunning -server))
-  (shutdown [_] (.stop -server))
+  (shutdown [_] (try
+                  (.stop -server)
+                  (catch java.lang.IllegalStateException _)))
 
   java.io.Closeable
   (close [_] (.stop -server)))
